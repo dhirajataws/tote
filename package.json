@@ -1,0 +1,25 @@
+{
+  "name": "tote",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch --coverage",
+    "start": "node ./dist/start.js",
+    "build": "tsc",
+    "start:dev": "npm run build && npm start"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/config": "0.0.34",
+    "@types/jest": "^24.0.11",
+    "@types/node": "^11.13.4",
+    "jest": "^24.7.1",
+    "ts-jest": "^24.0.2",
+    "typescript": "^3.4.3"
+  },
+  "dependencies": {
+    "config": "^3.1.0"
+  }
+}
