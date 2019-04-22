@@ -1,3 +1,3 @@
-import { main } from "./main";
+import { Main } from "./main";
 
-main()
+export const main = new Main();

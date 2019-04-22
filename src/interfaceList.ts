@@ -6,18 +6,25 @@ export interface IWin extends IGeneric {
 }
 export interface IPlace extends IGeneric {
 }
-export interface IExacta{
-  firstSelection:number;
-  secondSelection:number;
-  stake:number;
+export interface IExacta {
+  stake: number;
+  firstSelection: number;
+  secondSelection: number;
 }
 export interface IStore {
-  win:IWin,
-  place:IPlace,
-  exacta:IExacta
+  result: {
+    first: number ,
+    second: number ,
+    third: number 
+  } | null,
+  consolidatedWin: {},
+  totalWin: number
 }
-export interface ICommission{
-  win:number,
-  place:number,
-  exacta:number
+export interface ICommission {
+  win: number,
+  place: number,
+  exacta: number
+}
+export interface ICalculateWin {
+  (first: number): string
 }

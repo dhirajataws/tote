@@ -1,15 +1,38 @@
-import config from "config";
-import { ICommission } from "./interfaceList";
+import {
+  IStore,
+  ICalculateWin
+} from "./interfaceList";
 
-interface IController {
-  (): string
-}
-export const controller: IController = () => {
-  const commission: ICommission = config.get("commission");
-  console.log(commission)
-  return "pass"
+export class Main {
+  store: IStore;
+  constructor() {
+    this.store = {
+      result: null,
+      consolidatedWin: {},
+      totalWin: 0
+    }
+  }
+  get data() { return this.store }
+
+  addWin = (selection: number, stake: number) => {
+    this.store.totalWin = this.store.totalWin + stake;
+    this.store.consolidatedWin = {
+      ...this.store.consolidatedWin,
+      [selection]: (this.store.consolidatedWin[selection] ? this.store.consolidatedWin[selection] : 0) + stake
+    }
+  }
+  addResult = (first: number,
+    second: number,
+    third: number) =>
+    this.store.result = {
+      first,
+      second,
+      third
+    }
+
+  calculateWin: ICalculateWin = (first) => {
+    this.store.totalWin = this.store.totalWin * 85 / 100;
+    return (this.store.totalWin / this.store.consolidatedWin[first]).toFixed(2)
+  }
 }
 
-export function main() {
-  controller();
-}
