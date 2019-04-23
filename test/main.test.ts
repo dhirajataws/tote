@@ -35,7 +35,7 @@ describe("main", () => {
     expect(main.data.consolidatedWin[3]).toEqual(5 + 22 + 63);
     expect(main.data.consolidatedWin[4]).toEqual(5 + 57 + 15);
     const first = 2;
-    const result = main.calculateWin(2);
+    const result = main.calculateWin(first);
     expect(result[first]).toEqual("2.61")
   })
   it("should calculate win with no betting of first horse", () => {
@@ -47,7 +47,6 @@ describe("main", () => {
     expect(main.data.consolidatedWin[4]).toEqual(15);
     const first = 1;
     const result = main.calculateWin(first);
-    console.log(result)
     expect(result[first]).toEqual("149.60")
   })
 
@@ -112,5 +111,32 @@ describe("main", () => {
     const third = 1;
     const result = main.calculatePlace(first, second, third);
     expect(result).toEqual("0")
+  })
+  it("should calculate exacta", () => {
+    main.addExacta({ firstSelection: 1, secondSelection: 2, stake: 13 })
+    main.addExacta({ firstSelection: 2, secondSelection: 3, stake: 98 })
+    main.addExacta({ firstSelection: 1, secondSelection: 3, stake: 82 })
+    main.addExacta({ firstSelection: 3, secondSelection: 2, stake: 27 })
+    main.addExacta({ firstSelection: 1, secondSelection: 2, stake: 5 })
+    main.addExacta({ firstSelection: 2, secondSelection: 3, stake: 61 })
+    main.addExacta({ firstSelection: 1, secondSelection: 3, stake: 28 })
+    main.addExacta({ firstSelection: 3, secondSelection: 2, stake: 25 })
+    main.addExacta({ firstSelection: 1, secondSelection: 2, stake: 81 })
+    main.addExacta({ firstSelection: 2, secondSelection: 3, stake: 47 })
+    main.addExacta({ firstSelection: 1, secondSelection: 3, stake: 93 })
+    main.addExacta({ firstSelection: 3, secondSelection: 2, stake: 51 })
+    expect(main.data.consolidatedExacta["1,2"]).toEqual(13 + 5 + 81);
+    expect(main.data.consolidatedExacta["2,3"]).toEqual(98 + 61 + 47);
+    expect(main.data.consolidatedExacta["1,3"]).toEqual(82 + 28 + 93);
+    expect(main.data.consolidatedExacta["3,2"]).toEqual(27 + 25 + 51);
+    const result = main.calculateExacta(2, 3);
+    expect(result).toEqual("2.43")
+  })
+  it("should calculate win with no betting of exact order ", () => {
+    main.addExacta({ firstSelection: 1, secondSelection: 2, stake: 13 })
+    main.addExacta({ firstSelection: 2, secondSelection: 3, stake: 98 })
+    main.addExacta({ firstSelection: 1, secondSelection: 3, stake: 82 })
+    const result = main.calculateExacta(3, 1);
+    expect(result).toEqual("158.26")
   })
 })

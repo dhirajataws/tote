@@ -17,16 +17,22 @@ export interface IExacta {
   firstSelection: number;
   secondSelection: number;
 }
+export interface IAddExacta {
+  (exacta: IExacta): void
+}
 export interface IStore {
   result: {
     first: number,
     second: number,
     third: number
   } | null,
-  consolidatedWin: {},
   totalWin: number,
+  consolidatedWin: {},
   totalPlace: number,
-  consolidatedPlace: {}
+  consolidatedPlace: {},
+  totalExacta: number,
+  consolidatedExacta: {}
+
 }
 export interface ICommission {
   win: number,
@@ -40,4 +46,8 @@ export interface ICalculatePlace {
   (first: number,
     second: number,
     third: number): any
+}
+export interface ICalculateExacta {
+  (first: number,
+    second: number): any
 }

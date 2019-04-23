@@ -17,4 +17,7 @@ store : {
 [exacta]:{}  
 }
 
+# Assumption:
+1. The exacta numbers are not pre fixed with zero. The exacta order is being created a key for a name value pair. so the rules to define numbers must be clear. like 5,6 should not be entered as 05,06. 
+
 

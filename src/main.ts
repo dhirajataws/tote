@@ -5,7 +5,9 @@ import {
   ICommission,
   ICalculatePlace,
   IAddWin,
-  IAddPlace
+  IAddPlace,
+  IAddExacta,
+  ICalculateExacta
 } from "./interfaceList";
 
 export class Main {
@@ -18,7 +20,9 @@ export class Main {
       totalWin: 0,
       consolidatedPlace: {
       },
-      totalPlace: 0
+      totalPlace: 0,
+      consolidatedExacta: {},
+      totalExacta: 0
     }
     this.commission = config.get("commission");
     if (!this.commission) {// TODO test this 
@@ -90,6 +94,25 @@ export class Main {
       result[third] = eachPlace.toFixed(2)
     }
     return result;
+  }
+  addExacta: IAddExacta = ({ firstSelection, secondSelection, stake }) => {
+    this.store.totalExacta = this.store.totalExacta + stake;
+    const key = `${firstSelection},${secondSelection}`
+    this.store.consolidatedExacta = {
+      ...this.store.consolidatedExacta,
+      [key]: (this.store.consolidatedExacta[key] ? this.store.consolidatedExacta[key] : 0) + stake
+    }
+  }
+  calculateExacta: ICalculateExacta = (first, second) => {
+    if (this.store.totalExacta === 0)
+      return "0"
+    const key = `${first},${second}`
+    this.store.totalExacta = this.store.totalExacta * (100 - this.commission.exacta) / 100;
+    if (this.store.consolidatedExacta.hasOwnProperty(key)) {
+      return (this.store.totalExacta / this.store.consolidatedExacta[key]).toFixed(2)
+    } else {
+      return this.store.totalExacta.toFixed(2)
+    }
   }
 }
 
