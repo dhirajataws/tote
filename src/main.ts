@@ -9,6 +9,7 @@ import {
   IAddExacta,
   ICalculateExacta
 } from "./interfaceList";
+import readline from 'readline';
 
 export class Main {
   store: IStore;
@@ -37,6 +38,37 @@ export class Main {
   }
   get data() { return this.store }
 
+  start = () => {
+    var rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+      terminal: false
+    });
+
+    rl.on('line', line => {
+      this.processInput(line);
+    });
+  }
+  processInput = (line: string) => {
+
+
+    // Bet: P: 4: 72
+    // const elements = line.split(":")
+
+  }
+  regexMatcher = (line: string) => {
+    const regexBet = new RegExp(/(Bet):([W,P,W]):([0-9]):(\d)+/i)
+    const regexExacta = new RegExp(/(Bet):([W,P,W]):([0-9],[0-9]):(\d)+/i)
+    let matched = line.match(regexBet);
+    if (!matched) {
+      matched = line.match(regexExacta);
+    }
+    if (matched && matched[0])
+      return matched[0].split(":")
+    else
+      return null;
+
+  }
   addWin: IAddWin = ({ selection, stake }) => {
     this.store.totalWin = this.store.totalWin + stake;
     this.store.consolidatedWin = {
