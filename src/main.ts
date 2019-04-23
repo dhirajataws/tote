@@ -26,7 +26,7 @@ export class Main {
       totalExacta: 0
     }
     this.commission = config.get("commission");
-    if (!this.commission) {// TODO test this 
+    if (!this.commission) {
       throw new Error("Config values for commission is missing")
     }
     if (this.commission.win === 100) {
@@ -46,22 +46,82 @@ export class Main {
     });
 
     rl.on('line', line => {
-      this.processInput(line);
+      this.processInput(this.regexMatcher(line));
     });
   }
-  processInput = (line: string) => {
-
-
-    // Bet: P: 4: 72
-    // const elements = line.split(":")
+  processInput = (result: string[] | null) => {
+    if (!result) {
+      console.log("invalid input");
+    } else {
+      if (result[0] === "Result")
+        this.processOutput(result);
+      else {
+        switch (result[1]) {
+          case "W":
+            this.processWin(result);
+            break;
+          case "P":
+            this.processPlace(result);
+            break;
+          case "E":
+            this.processExacta(result)
+            break;
+          default:
+            console.log("Invalid Input")
+        }
+      }
+    }
+  }
+  processOutput = (result: string[]) => {
+    const win = this.calculateWin(parseInt(result[1]))
+    const place = this.calculatePlace(
+      parseInt(result[1]),
+      parseInt(result[2]),
+      parseInt(result[3])
+    )
+    const exacta = this.calculateExacta(
+      parseInt(result[1]),
+      parseInt(result[2])
+    )
+    console.log(`Win:${result[1]}:$${win[result[1]]}`);
+    console.log(`Place:${result[1]}:$${place[result[1]]}`);
+    console.log(`Place:${result[2]}:$${place[result[1]]}`);
+    console.log(`Place:${result[3]}:$${place[result[1]]}`);
+    const exactaString = `${result[1]},${result[2]}`;
+    console.log(`Exacta:${exactaString}:$${exacta}`);
+    process.exit(0);
+  }
+  processWin = (values: string[]) => {
+    this.addWin({
+      selection: parseInt(values[2]),
+      stake: parseInt(values[3])
+    })
 
   }
+  processPlace = (values: string[]) => {
+    this.addPlace({
+      selection: parseInt(values[2]),
+      stake: parseInt(values[3])
+    })
+  }
+  processExacta = (values: string[]) => {
+    this.addExacta({
+      firstSelection: parseInt(values[2].split(",")[0]),
+      secondSelection: parseInt(values[2].split(",")[1]),
+      stake: parseInt(values[3])
+    })
+  }
   regexMatcher = (line: string) => {
-    const regexBet = new RegExp(/(Bet):([W,P,W]):([0-9]):(\d)+/i)
-    const regexExacta = new RegExp(/(Bet):([W,P,W]):([0-9],[0-9]):(\d)+/i)
+    const regexBet = new RegExp(/(Bet):([W,P]):([0-9]):(\d)+/i)
+    const regexExacta = new RegExp(/(Bet):([E]):([0-9],[0-9]):(\d)+/i)
+    const regexResult = new RegExp(/(Result):(\d):(\d):(\d)+/i)
+
     let matched = line.match(regexBet);
     if (!matched) {
       matched = line.match(regexExacta);
+    }
+    if (!matched) {
+      matched = line.match(regexResult);
     }
     if (matched && matched[0])
       return matched[0].split(":")

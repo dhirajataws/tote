@@ -7,17 +7,17 @@ describe("main", () => {
   beforeEach(() => {
     main = new Main();
   })
-  xit("should expose a main method", () => {
+  it("should expose a main method", () => {
     expect(main).toBeDefined();
   })
-  xit("should expose config", () => {
+  it("should expose config", () => {
     expect(config).toBeDefined();
     const commission: ICommission = config.get("commission");
     expect(commission.win).toEqual("15")
     expect(commission.place).toEqual("12")
     expect(commission.exacta).toEqual("18")
   })
-  xit("should calculate win", () => {
+  it("should calculate win", () => {
     main.addWin({ selection: 1, stake: 3 })
     main.addWin({ selection: 2, stake: 4 })
     main.addWin({ selection: 3, stake: 5 })
@@ -132,7 +132,7 @@ describe("main", () => {
     const result = main.calculateExacta(2, 3);
     expect(result).toEqual("2.43")
   })
-  xit("should calculate win with no betting of exact order ", () => {
+  it("should calculate win with no betting of exact order ", () => {
     main.addExacta({ firstSelection: 1, secondSelection: 2, stake: 13 })
     main.addExacta({ firstSelection: 2, secondSelection: 3, stake: 98 })
     main.addExacta({ firstSelection: 1, secondSelection: 3, stake: 82 })
@@ -145,13 +145,28 @@ describe("main", () => {
     expect(result && result[1]).toEqual("W")
     expect(result && result[2]).toEqual("3")
     expect(result && result[3]).toEqual("4")
-    result = main.regexMatcher("Bet:W:3,4:4");
+    result = main.regexMatcher("Bet:W:3:4");
+    main.processInput(result)
+    expect(main.data.consolidatedWin[3]).toEqual(4)
+
+
+    result = main.regexMatcher("Bet:P:3:4");
     expect(result && result[0]).toEqual("Bet")
-    expect(result && result[1]).toEqual("W")
+    expect(result && result[1]).toEqual("P")
+    expect(result && result[2]).toEqual("3")
+    expect(result && result[3]).toEqual("4")
+    main.processInput(result)
+    expect(main.data.consolidatedPlace[3]).toEqual(4)
+
+    result = main.regexMatcher("Bet:E:3,4:4");
+    expect(result && result[0]).toEqual("Bet")
+    expect(result && result[1]).toEqual("E")
     expect(result && result[2]).toEqual("3,4")
     expect(result && result[3]).toEqual("4")
+    main.processInput(result);
+    expect(main.data.consolidatedExacta["3,4"]).toEqual(4)
+
     result = main.regexMatcher("Bet1:W:3,4:4");
     expect(result).toBe(null);
-
   })
 })
